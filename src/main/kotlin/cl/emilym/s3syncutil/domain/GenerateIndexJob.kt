@@ -5,7 +5,7 @@ import cl.emilym.s3syncutil.files.FilesystemVisitor
 import cl.emilym.s3syncutil.models.FileInfo
 import java.security.MessageDigest
 
-class GenerateShaJob(
+class GenerateIndexJob(
     private val scanner: FileManager
 ) {
 

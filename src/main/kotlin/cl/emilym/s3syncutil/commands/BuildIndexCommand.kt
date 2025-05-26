@@ -1,6 +1,6 @@
 package cl.emilym.s3syncutil.commands
 
-import cl.emilym.s3syncutil.domain.GenerateShaJob
+import cl.emilym.s3syncutil.domain.GenerateIndexJob
 import cl.emilym.s3syncutil.domain.WriteTripIndexJob
 import cl.emilym.s3syncutil.files.FileContext
 import cl.emilym.s3syncutil.files.FileManager
@@ -27,7 +27,7 @@ class BuildIndexCommand: Callable<Void> {
     lateinit var outputPath: String
 
     override fun call(): Void? {
-        val sha = GenerateShaJob(
+        val sha = GenerateIndexJob(
             FileManager.get(FileContext.forPath(inputPath))
         )(inputPath)
         WriteTripIndexJob(
