@@ -1,12 +1,12 @@
 package cl.emilym.s3syncutil.domain
 
-import cl.emilym.s3syncutil.files.FilesystemScanner
+import cl.emilym.s3syncutil.files.FileManager
 import cl.emilym.s3syncutil.files.FilesystemVisitor
 import cl.emilym.s3syncutil.models.FileInfo
 import java.security.MessageDigest
 
 class GenerateShaJob(
-    private val scanner: FilesystemScanner
+    private val scanner: FileManager
 ) {
 
     operator fun invoke(path: String): List<FileInfo> {

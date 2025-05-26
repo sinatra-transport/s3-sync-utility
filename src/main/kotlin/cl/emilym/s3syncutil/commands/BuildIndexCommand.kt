@@ -1,7 +1,9 @@
 package cl.emilym.s3syncutil.commands
 
-import cl.emilym.s3syncutil.files.FilesystemScanner
 import cl.emilym.s3syncutil.domain.GenerateShaJob
+import cl.emilym.s3syncutil.domain.WriteTripIndexJob
+import cl.emilym.s3syncutil.files.FileContext
+import cl.emilym.s3syncutil.files.FileManager
 import picocli.CommandLine
 import java.util.concurrent.Callable
 
@@ -24,9 +26,13 @@ class BuildIndexCommand: Callable<Void> {
     lateinit var outputPath: String
 
     override fun call(): Void? {
-        val scanner = FilesystemScanner.get(inputPath)
-        val sha = GenerateShaJob(scanner)(inputPath)
-        println(sha)
+        val sha = GenerateShaJob(
+            FileManager.get(FileContext.forPath(inputPath))
+        )(inputPath)
+        WriteTripIndexJob(
+            FileManager.get(FileContext.forPath(outputPath))
+        )(outputPath, sha)
+
         return null
     }
 

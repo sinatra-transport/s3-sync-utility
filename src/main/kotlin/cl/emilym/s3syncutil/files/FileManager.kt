@@ -6,28 +6,32 @@ import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.relativeTo
 
-interface FilesystemVisitor {
+interface FileManager {
 
-    fun visit(
-        path: String,
-        content: ByteArray
-    )
-
-}
-
-interface FilesystemScanner {
+    fun read(path: String): ByteArray
+    fun write(path: String, content: ByteArray)
 
     fun scan(root: String, visitors: List<FilesystemVisitor>)
 
     companion object {
-        fun get(path: String): FilesystemScanner {
-            return LocalFilesystemScanner()
+
+        fun get(context: FileContext): FileManager {
+            return LocalFileManager()
         }
+
     }
 
 }
 
-class LocalFilesystemScanner: FilesystemScanner {
+class LocalFileManager: FileManager {
+
+    override fun read(path: String): ByteArray {
+        return Files.readAllBytes(Path.of(path))
+    }
+
+    override fun write(path: String, content: ByteArray) {
+        Files.write(Path.of(path), content)
+    }
 
     override fun scan(root: String, visitors: List<FilesystemVisitor>) {
         _scan(Path.of(root), Path.of(root), visitors)
