@@ -9,7 +9,7 @@ import picocli.CommandLine
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "build-index",
+    name = "build",
     description = ["Builds an index of a file structure."]
 )
 class BuildIndexCommand: Callable<Void> {
@@ -32,7 +32,7 @@ class BuildIndexCommand: Callable<Void> {
         )(inputPath)
         WriteTripIndexJob(
             FileManager.get(FileContext.forPath(outputPath))
-        )(outputPath, Index.fromFiles(sha))
+        )(outputPath, sha)
 
         return null
     }

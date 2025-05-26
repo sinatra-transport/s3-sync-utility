@@ -3,6 +3,7 @@ package cl.emilym.s3syncutil.domain
 import cl.emilym.s3syncutil.files.FileManager
 import cl.emilym.s3syncutil.files.FilesystemVisitor
 import cl.emilym.s3syncutil.models.FileInfo
+import cl.emilym.s3syncutil.models.Index
 import java.security.MessageDigest
 
 class GenerateIndexJob(
@@ -13,7 +14,7 @@ class GenerateIndexJob(
         private val digest = MessageDigest.getInstance("SHA-256")
     }
 
-    operator fun invoke(path: String): List<FileInfo> {
+    operator fun invoke(path: String): Index {
         val files = mutableListOf<FileInfo>()
         scanner.scan(path, listOf(
             object : FilesystemVisitor {
@@ -26,7 +27,7 @@ class GenerateIndexJob(
             }
         ))
 
-        return files.toList()
+        return Index.fromFiles(files)
     }
 
 }

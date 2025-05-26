@@ -9,19 +9,19 @@ import picocli.CommandLine
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "compare-index",
+    name = "compare",
     description = ["Compares an index of two file structures."]
 )
 class CompareIndexCommand: Callable<Void> {
 
     @CommandLine.Option(
-        names = ["-o", "--old"],
+        names = ["-o", "--old-index"],
         required = true
     )
     lateinit var oldPath: String
 
     @CommandLine.Option(
-        names = ["-n", "--new"],
+        names = ["-n", "--new-index"],
         required = true
     )
     lateinit var newPath: String

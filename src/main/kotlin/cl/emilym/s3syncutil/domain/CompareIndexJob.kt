@@ -7,18 +7,18 @@ class CompareIndexJob {
 
     operator fun invoke(
         old: Index,
-        _new: Index
+        new: Index
     ): List<FileChange> {
-        val keys = (old.files.keys + _new.files.keys).distinct()
+        val keys = (old.files.keys + new.files.keys).distinct()
 
         return keys.mapNotNull { k ->
             when {
-                old.files.containsKey(k) && !_new.files.containsKey(k) ->
+                old.files.containsKey(k) && !new.files.containsKey(k) ->
                     FileChange.Delete(k)
-                !old.files.containsKey(k) && _new.files.containsKey(k) ->
-                    FileChange.Create(k, _new.files[k]!!.sha)
-                old.files[k]!!.sha != _new.files[k]!!.sha ->
-                    FileChange.Update(k, _new.files[k]!!.sha)
+                !old.files.containsKey(k) && new.files.containsKey(k) ->
+                    FileChange.Create(k, new.files[k]!!.sha)
+                old.files[k]!!.sha != new.files[k]!!.sha ->
+                    FileChange.Update(k, new.files[k]!!.sha)
                 else -> null
             }
         }

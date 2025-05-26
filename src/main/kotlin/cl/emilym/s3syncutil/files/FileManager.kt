@@ -10,6 +10,7 @@ interface FileManager {
 
     fun read(path: String): ByteArray
     fun write(path: String, content: ByteArray)
+    fun delete(path: String)
 
     fun scan(root: String, visitors: List<FilesystemVisitor>)
 
@@ -31,6 +32,10 @@ class LocalFileManager: FileManager {
 
     override fun write(path: String, content: ByteArray) {
         Files.write(Path.of(path), content)
+    }
+
+    override fun delete(path: String) {
+        Files.delete(Path.of(path))
     }
 
     override fun scan(root: String, visitors: List<FilesystemVisitor>) {
