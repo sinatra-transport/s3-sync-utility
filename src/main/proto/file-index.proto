@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+option java_package = "cl.emilym.s3syncutil.models.proto";
+
+package s3syncutil;
+
+message Index {
+  repeated FileInfo files = 1;
+}
+
+message FileInfo {
+  required string path = 1;
+  optional string sha = 2;
+}
