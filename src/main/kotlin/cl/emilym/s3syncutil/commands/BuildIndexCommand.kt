@@ -4,6 +4,7 @@ import cl.emilym.s3syncutil.domain.GenerateShaJob
 import cl.emilym.s3syncutil.domain.WriteTripIndexJob
 import cl.emilym.s3syncutil.files.FileContext
 import cl.emilym.s3syncutil.files.FileManager
+import cl.emilym.s3syncutil.models.Index
 import picocli.CommandLine
 import java.util.concurrent.Callable
 
@@ -31,7 +32,7 @@ class BuildIndexCommand: Callable<Void> {
         )(inputPath)
         WriteTripIndexJob(
             FileManager.get(FileContext.forPath(outputPath))
-        )(outputPath, sha)
+        )(outputPath, Index.fromFiles(sha))
 
         return null
     }

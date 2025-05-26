@@ -9,10 +9,12 @@ class GenerateShaJob(
     private val scanner: FileManager
 ) {
 
+    companion object {
+        private val digest = MessageDigest.getInstance("SHA-256")
+    }
+
     operator fun invoke(path: String): List<FileInfo> {
         val files = mutableListOf<FileInfo>()
-        val digest = MessageDigest.getInstance("SHA-256")
-
         scanner.scan(path, listOf(
             object : FilesystemVisitor {
                 override fun visit(path: String, content: ByteArray) {
