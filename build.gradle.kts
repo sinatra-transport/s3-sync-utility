@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "2.1.20"
     kotlin("kapt") version "2.1.20"
+    id("io.ktor.plugin") version "2.2.3"
     id("com.google.protobuf") version "0.9.5"
 }
 
@@ -42,6 +43,17 @@ tasks.withType<Copy> {
 kotlin {
     jvmToolchain(17)
 }
+
+application {
+    mainClass.set("cl.emilym.s3syncutil.MainKt")
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("s3syncutil.jar")
+    }
+}
+
 
 sourceSets {
     main {

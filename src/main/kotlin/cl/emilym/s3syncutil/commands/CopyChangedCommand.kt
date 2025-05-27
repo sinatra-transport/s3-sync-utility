@@ -62,9 +62,12 @@ class CopyChangedCommand: Callable<Void> {
             when (change) {
                 is FileChange.Delete -> {
                     if (ignoreDelete) continue
-                    outputFileManager.delete(change.path)
+                    outputFileManager.delete(outputFileManager.joinPath(outputPath, change.path))
                 }
-                else -> outputFileManager.write(change.path, inputFileManager.read(change.path))
+                else -> outputFileManager.write(
+                    outputFileManager.joinPath(outputPath, change.path),
+                    inputFileManager.read(inputFileManager.joinPath(inputPath, change.path))
+                )
             }
         }
 

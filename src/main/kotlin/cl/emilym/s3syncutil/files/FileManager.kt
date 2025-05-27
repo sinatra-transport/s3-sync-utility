@@ -12,6 +12,8 @@ interface FileManager {
     fun write(path: String, content: ByteArray)
     fun delete(path: String)
 
+    fun joinPath(parent: String, child: String): String
+
     fun scan(root: String, visitors: List<FilesystemVisitor>)
 
     companion object {
@@ -31,11 +33,16 @@ class LocalFileManager: FileManager {
     }
 
     override fun write(path: String, content: ByteArray) {
+        Files.createDirectories(Path.of(path).parent)
         Files.write(Path.of(path), content)
     }
 
     override fun delete(path: String) {
         Files.delete(Path.of(path))
+    }
+
+    override fun joinPath(parent: String, child: String): String {
+        return Path.of(parent).resolve(child).toString()
     }
 
     override fun scan(root: String, visitors: List<FilesystemVisitor>) {
