@@ -1,0 +1,18 @@
+open module base
+extends "package://github.com/emilymclean/pkl-github-actions/releases/download/v1.0.0/pkl-github-actions@1.0.0#/actions.pkl"
+
+hidden checkout = new ActionStep {
+    uses = "actions/checkout@v4"
+    with = new Mapping {
+        ["fetch-depth"] = 0
+    }
+}
+
+function dockerBuild(withM: Mapping, ifStatement: String?): Listing<Step> = new Listing {
+    new ActionStep {
+        name = "Build and push Docker image"
+        uses = "docker/build-push-action@v6"
+        `if` = ifStatement
+        with = withM
+    }
+}

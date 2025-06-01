@@ -1,0 +1,106 @@
+name: Build Docker image
+'on':
+  push:
+    branches:
+    - main
+    - develop
+permissions:
+  contents: write
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.gitversion.outputs.semVer }}
+      major: ${{ steps.gitversion.outputs.major }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v3.0.0
+      with:
+        versionSpec: 5.x
+    - id: gitversion
+      name: Use GitVersion
+      uses: gittools/actions/gitversion/execute@v3.0.0
+      with:
+        useConfigFile: true
+        configFilePath: ./gitversion.yml
+    - name: Generate Job Summary
+      run: |-
+        echo "# Version Info
+        Semantic Version: ${{ steps.gitversion.outputs.semVer }}" >> $GITHUB_STEP_SUMMARY
+  release:
+    permissions:
+      contents: write
+    needs:
+    - version
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Create tag for release
+      uses: rickstaa/action-create-tag@v1
+      with:
+        tag: v${{ needs.version.outputs.version }}
+    - id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ needs.version.outputs.version }}
+        name: Release ${{ needs.version.outputs.version }}
+        prerelease: ${{ github.ref == 'refs/heads/develop' }}
+  build:
+    permissions:
+      contents: read
+      packages: write
+    needs:
+    - version
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Lowercase repository name
+      env:
+        REPOSITORY: ${{ github.repository }}
+      run: echo "REPOSITORY_LC=${REPOSITORY,,}" >> ${GITHUB_ENV}
+    - name: Setup QEMU
+      uses: docker/setup-qemu-action@v3
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Log in to the Container registry
+      uses: docker/login-action@v3
+      with:
+        registry: https://ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push Docker image
+      if: github.ref == 'refs/heads/main'
+      uses: docker/build-push-action@v6
+      with:
+        context: ./
+        platforms: linux/amd64,linux/arm64/v8
+        push: true
+        tags: |-
+          ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}
+          ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-nightly
+          ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-${{ needs.version.outputs.major }}-nightly
+          ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-${{ needs.version.outputs.version }}
+          ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-${{ needs.version.outputs.major }}
+    - name: Build and push Docker image
+      if: github.ref != 'refs/heads/main'
+      uses: docker/build-push-action@v6
+      with:
+        context: ./
+        platforms: linux/amd64,linux/arm64/v8
+        push: true
+        tags: |-
+          ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-nightly
+          ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-${{ needs.version.outputs.major }}-nightly
+          ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-${{ needs.version.outputs.version }}
