@@ -122,11 +122,11 @@ jobs = new Mapping {
                     ["platforms"] = "linux/amd64,linux/arm64/v8"
                     ["push"] = true
                     ["tags"] = """
-                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}
-                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-nightly
-                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-${{ needs.version.outputs.major }}-nightly
-                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-${{ needs.version.outputs.version }}
-                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-${{ needs.version.outputs.major }}
+                    ghcr.io/${{ env.REPOSITORY_LC }}:latest
+                    ghcr.io/${{ env.REPOSITORY_LC }}:nightly
+                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ needs.version.outputs.major }}-nightly
+                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ needs.version.outputs.major }}-latest
+                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ needs.version.outputs.version }}
                     """
                 },
                 "github.ref == 'refs/heads/main'"
@@ -137,9 +137,9 @@ jobs = new Mapping {
                     ["platforms"] = "linux/amd64,linux/arm64/v8"
                     ["push"] = true
                     ["tags"] = """
-                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-nightly
-                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-${{ needs.version.outputs.major }}-nightly
-                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ matrix.version }}-${{ needs.version.outputs.version }}
+                    ghcr.io/${{ env.REPOSITORY_LC }}:nightly
+                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ needs.version.outputs.major }}-nightly
+                    ghcr.io/${{ env.REPOSITORY_LC }}:${{ needs.version.outputs.version }}
                     """
                 },
                 "github.ref != 'refs/heads/main'"
