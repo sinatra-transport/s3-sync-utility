@@ -13,7 +13,7 @@ class LocalFileManager: FileManager {
     }
 
     override fun write(path: String, content: ByteArray) {
-        Files.createDirectories(Path.of(path).parent)
+        Path.of(path).parent?.let { Files.createDirectories(it) }
         Files.write(Path.of(path), content)
     }
 

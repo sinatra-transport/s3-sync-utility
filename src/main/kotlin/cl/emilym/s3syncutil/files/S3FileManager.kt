@@ -44,6 +44,19 @@ class S3FileManager(
         root: String,
         visitors: List<FilesystemVisitor>
     ) {
-        TODO("Not yet implemented")
+        val uri = s3.utilities().parseUri(URI.create(root))
+        val objects = s3.listObjectsV2Paginator { builder ->
+            builder.bucket(uri.bucket().get())
+            builder.prefix(uri.key().orElse(""))
+        }
+        for (o in objects.contents()) {
+            val path = "s3://${uri.bucket().get()}/${o.key()}"
+            val content = read(path)
+            visitors.forEach { it.visit(
+                path.substring(root.length),
+                content
+            ) }
+        }
     }
+
 }

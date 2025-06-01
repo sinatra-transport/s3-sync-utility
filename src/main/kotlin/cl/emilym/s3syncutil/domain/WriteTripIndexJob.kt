@@ -1,9 +1,7 @@
 package cl.emilym.s3syncutil.domain
 
 import cl.emilym.s3syncutil.files.FileManager
-import cl.emilym.s3syncutil.models.FileInfo
 import cl.emilym.s3syncutil.models.Index
-import cl.emilym.s3syncutil.models.proto.FileIndex
 
 class WriteTripIndexJob(
     private val manager: FileManager

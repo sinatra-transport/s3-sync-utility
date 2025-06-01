@@ -13,7 +13,10 @@ interface FileManager {
     companion object {
 
         fun get(context: FileContext): FileManager {
-            return LocalFileManager()
+            return when (context) {
+                FileContext.LOCAL -> LocalFileManager()
+                FileContext.S3 -> S3FileManager()
+            }
         }
 
     }
